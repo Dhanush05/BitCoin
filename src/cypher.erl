@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author dhanush
+%%% @author dhanush,akhil
 %%% @copyright (C) 2022, <COMPANY>
 %%% @doc
 %%%
@@ -11,46 +11,48 @@
 
 %% API
 -export([main/1,createActors/0]).
-main(K)->
-  stringGenerator(12,"qwertyQWERTY1234567890").
 
-stringGenerator(Length, AllowedChars)->
+main(K)->
+  hashGenerator(20,"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890").
+
+hashGenerator(Length, AllowedChars)->
   _Gs = lists:foldl(fun(_,Acc)->
-    [lists:nth(random:uniform(length(AllowedChars)),AllowedChars)]
+    [lists:nth(rand:uniform(length(AllowedChars)),AllowedChars)]
       ++Acc
     end, [], lists:seq(1,Length)),
   _prefix = "dpakanati;",
-  _Test = "shubhamagiwal92;24018048",
   _FS = _prefix++_Gs,
-  createHash(_FS).
-
-createHash(_A)->
-  _BinaryCypher = crypto:hash(sha256,_A),
-  _IntegerCypher = binary:decode_unsigned(_BinaryCypher),
+  _BinaryCypher = crypto:hash(sha256,_FS),
+  _IntegerCypher = binary:decode_unsigned(_BinaryCypher,big),
+%%  _Value = io:fwrite("String is ~64.16.0b  ",[_IntegerCypher]),
   _Hash = integer_to_list(_IntegerCypher,16),
-  %%io:fwrite(" Hash length is  ~w \n", [string:length(_Hash)]),
   _Length = string:length(_Hash),
+  %%if length is count of coins: stop all process.
+  %%else: continue mining.
   if
-    _Length ==60 -> io:fwrite("String: ~p hash: ~p \n",[_A,"0000"++_Hash]);
-    true -> main(1)
+    _Length ==59 ->
+      io:fwrite("String: ~p hash: ~p \n",[_FS,"00000"++_Hash]);
+    true ->
+      main(1)
   end.
 
 createActors()->
-  F = fun(X)-> timer: sleep(10), main(1) end,
-  [spawn(fun()->F(X)end)||X<-lists:seq(1,10)].
+  %%parameter as count
+  F = fun(X)->
+    timer: sleep(10),
+    main(1)
+      end,
+  [spawn(fun()->F(X) end)||X<-lists:seq(1,4)],
+  %%Function = spawn(Cypher, main,[1]),
+  statistics(runtime).
 
-
-
-
-
-
+counter()->
+  N = 10,
 
 
 %%  _zerocount  = string:sub_string(_Hash,1,1),
 %%  checkCoin(_zerocount).
 %%checkCoin(_zeros) when _zeros /= "0"->
 %%  main(2).
-
-
 %%io_lib:format("String is ~64.16.0b",[_IntegerCypher]).
 
