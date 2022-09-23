@@ -11,6 +11,7 @@
 
 %% API
 -export([start/0,createActors/1,receiver/1]).
+
 createActors(Mid)->
   receive
     {create_actors}->
