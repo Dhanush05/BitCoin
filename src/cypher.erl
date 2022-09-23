@@ -46,9 +46,9 @@ createActors()->
   %%Function = spawn(Cypher, main,[1]),
   statistics(runtime).
 
-counter()->
-  N = 10,
-
+%%counter()->
+%%  N = 10,
+%%
 
 %%  _zerocount  = string:sub_string(_Hash,1,1),
 %%  checkCoin(_zerocount).
