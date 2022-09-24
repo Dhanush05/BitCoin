@@ -1,7 +1,7 @@
 -module(mining).
--export([main/2]).
+-export([main/3]).
 
-main(N,Mid) ->
+main(N,Counter,Pid) ->
   AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
   Length = 20,
   _Gs = lists:foldl(fun(_,Acc)->
@@ -17,12 +17,17 @@ main(N,Mid) ->
   _Hash = integer_to_list(_IntegerCypher,16),
   _Length = string:length(_Hash),
   if
-    _Length ==60 ->
-      io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
-      Mid!{reached_main,_Value};
-%%      main(N,Mid);
+    Counter=<100000 ->
+      if
+        _Length == 60 ->
+          io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
+          main(N,Counter+1,Pid);
+        true ->
+          main(N,Counter+1,Pid)
+      end;
     true ->
-      main(N,Mid)
+      Pid!{finished}
   end.
+
 
 
