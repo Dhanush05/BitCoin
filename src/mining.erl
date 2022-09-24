@@ -20,7 +20,7 @@ main(N,Mid) ->
   %%if length is count of coins: stop all process.
   %%else: continue mining.
   if
-    _Length ==60 ->
+    _Length ==56 ->
       io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),Mid!{reached_main,N};
 %%      ,main(N,Mid);
     true ->

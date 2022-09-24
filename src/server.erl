@@ -18,7 +18,7 @@ createActors(Mid,_zeroes)->
       io:fwrite("~p~n",[self()]),
       spawn(mining, main, ["4",Mid]),
       spawn(mining, main, ["4",Mid]),
-%%      spawn(mining, main, ["3",Mid]),
+      spawn(mining, main, ["3",Mid]),
       spawn(mining, main, ["4",Mid]);
     {reached_main,Num}->
       io:fwrite("numb received ins ~w",[Num])
