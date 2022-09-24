@@ -1,7 +1,29 @@
--module(mining).
--export([main/2]).
+%%%-------------------------------------------------------------------
+%%% @author dhanush
+%%% @copyright (C) 2022, <COMPANY>
+%%% @doc
+%%%
+%%% @end
+%%% Created : 24. Sep 2022 1:00 AM
+%%%-------------------------------------------------------------------
+-module(client).
+-author("dhanush").
 
-main(N,Mid) ->
+%% API
+-export([mine/2,ping/1]).
+ping(Node)->
+  {serverpid,Node}!{ping,self()},
+  receive
+    {nval,N}->
+      io:format("N received"),
+      spawn(client, mine,[N,Node]),
+      spawn(client, mine,[N,Node]),
+      spawn(client, mine,[N,Node])
+  end.
+
+%%  end.
+
+mine(N,Node) ->
   AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
   Length = 20,
   _Gs = lists:foldl(fun(_,Acc)->
@@ -19,10 +41,9 @@ main(N,Mid) ->
   if
     _Length ==60 ->
       io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
-      Mid!{reached_main,_Value};
-%%      main(N,Mid);
+      {serverpid,Node}!{reached_main,_FS,_Value},
+      mine(N,Node);
     true ->
-      main(N,Mid)
+      mine(N,Node)
   end.
-
 
