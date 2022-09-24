@@ -10,20 +10,22 @@
 -author("dhanush").
 
 %% API
--export([mine/2,ping/1]).
+-export([mine/3,ping/1]).
 ping(Node)->
   {serverpid,Node}!{ping,self()},
   receive
     {nval,N}->
       io:format("N received"),
-      spawn(client, mine,[N,Node]),
-      spawn(client, mine,[N,Node]),
-      spawn(client, mine,[N,Node])
+      spawn(client, mine,[N,Node,0]),
+      spawn(client, mine,[N,Node,0]),
+      spawn(client, mine,[N,Node,0]),
+      spawn(client, mine,[N,Node,0]),
+      spawn(client, mine,[N,Node,0])
   end.
 
 %%  end.
 
-mine(N,Node) ->
+mine(N,Node,Counter) ->
   AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
   Length = 20,
   _Gs = lists:foldl(fun(_,Acc)->
@@ -39,11 +41,24 @@ mine(N,Node) ->
   _Hash = integer_to_list(_IntegerCypher,16),
   _Length = string:length(_Hash),
   if
-    _Length ==60 ->
-      io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
-      {serverpid,Node}!{reached_main,_FS,_Value},
-      mine(N,Node);
+    Counter=<100000 ->
+      if
+        _Length ==60 ->
+          io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
+          {serverpid,Node}!{reached_main,_FS,_Value},
+          mine(N,Node,Counter+1);
+        true ->
+          mine(N,Node,Counter+1)
+      end;
     true ->
-      mine(N,Node)
+      ok
   end.
-
+%%  if
+%%    _Length ==60 ->
+%%      io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
+%%      {serverpid,Node}!{reached_main,_FS,_Value},
+%%      mine(N,Node);
+%%    true ->
+%%      mine(N,Node)
+%%  end.
+%%
