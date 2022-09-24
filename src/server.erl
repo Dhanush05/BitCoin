@@ -10,14 +10,14 @@
 -author("dhanush").
 
 %% API
--export([start/0,createActors/1,receiver/1]).
+-export([start/1,createActors/2,receiver/1]).
 
-createActors(Mid)->
+createActors(Mid,_zeroes)->
   receive
     {create_actors}->
       io:fwrite("~p~n",[self()]),
-      spawn(mining, main, ["1",Mid]),
-      spawn(mining, main, ["2",Mid]),
+      spawn(mining, main, ["4",Mid]),
+      spawn(mining, main, ["4",Mid]),
 %%      spawn(mining, main, ["3",Mid]),
       spawn(mining, main, ["4",Mid]);
     {reached_main,Num}->
@@ -25,7 +25,7 @@ createActors(Mid)->
   end.
 
 receiver(0)->
-  io:fwrite("Four recives done");
+  io:fwrite("");
 receiver(N)->
   receive
     {reached_main,Num}->
@@ -34,11 +34,11 @@ receiver(N)->
   end,
   receiver(N-1).
 
-start() ->
-  Mid = spawn(server, createActors, [self()]),
+start(_zeroes) ->
+  Mid = spawn(server, createActors, [self(),_zeroes]),
   io:fwrite("~p~n",[self()]),
   io:fwrite("Master id is: ~w \n",[Mid]),
-  Mid!{create_actors}.
-%%  receiver(4).
+  Mid!{create_actors},
+  receiver(3).
 
 

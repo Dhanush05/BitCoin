@@ -12,7 +12,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0,stop/0,bitcoin/0,startactors/0]).
+-export([start_link/0,stop/0,bitcoin/0,startactors/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2,
@@ -39,8 +39,8 @@ stop()->
   gen_server:cast({global,?MODULE},stop).
 bitcoin()->
   gen_server:call({global,?MODULE},{minecoin}).
-startactors()->
-    gen_server:call({global,?MODULE},{startactors}).
+startactors(_count)->
+    gen_server:call({global,?MODULE},{startactors,_count}).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -66,8 +66,8 @@ init([]) ->
     {stop, Reason :: term(), NewState :: #test_server_state{}}).
 handle_call({minecoin}, _From, State) ->
     {reply, logic:main(), State};
-handle_call({startactors},_From,State)->
-    {reply, server:start(),State}.
+handle_call({startactors,_count},_From,State)->
+    {reply, server:start(_count),State}.
 
 %% @private
 %% @doc Handling cast messages

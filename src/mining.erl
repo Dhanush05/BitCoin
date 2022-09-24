@@ -12,6 +12,8 @@ main(N,Mid) ->
   _FS = _prefix++_Gs,
   _BinaryCypher = crypto:hash(sha256,_FS),
   _IntegerCypher = binary:decode_unsigned(_BinaryCypher,big),
+  _Value = io_lib:format("~64.16.0b",[_IntegerCypher]),
+  _Substring = string:substr(_Value,1,4),
 %%  _Value = io:fwrite("String is ~64.16.0b  ",[_IntegerCypher]),
   _Hash = integer_to_list(_IntegerCypher,16),
   _Length = string:length(_Hash),
@@ -19,7 +21,7 @@ main(N,Mid) ->
   %%else: continue mining.
   if
     _Length ==60 ->
-      io:fwrite("String: ~p hash: ~p \n",[_FS,"0000"++_Hash]),Mid!{reached_main,N};
+      io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),Mid!{reached_main,N};
 %%      ,main(N,Mid);
     true ->
       main(N,Mid)
