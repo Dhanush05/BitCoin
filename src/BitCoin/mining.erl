@@ -8,7 +8,7 @@ main(N,Counter,Pid) ->
     [lists:nth(rand:uniform(length(AllowedChars)),AllowedChars)]
     ++Acc
                     end, [], lists:seq(1,Length)),
-  _prefix = "dpakanati;",
+  _prefix = "dpakanatiserver;",
   _FS = _prefix++_Gs,
   _BinaryCypher = crypto:hash(sha256,_FS),
   _IntegerCypher = binary:decode_unsigned(_BinaryCypher,big),
@@ -19,7 +19,7 @@ main(N,Counter,Pid) ->
   if
     Counter=<100000 ->
       if
-        _Length == 60 ->
+        _Length == 64-N ->
           io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
           main(N,Counter+1,Pid);
         true ->

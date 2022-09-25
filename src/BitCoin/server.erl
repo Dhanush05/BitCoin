@@ -48,6 +48,8 @@ start(_zeroes) ->
   {_,_} = statistics(runtime),
   {_,_} = statistics(wall_clock),
   _Pid = spawn(fun()->term(0) end),
+
+  createActors(4),
   register(serverpid, spawn(server, listen, [_zeroes,_Pid])).
 
 term(CoresDone) ->
