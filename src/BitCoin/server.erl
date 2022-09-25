@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author dhanush
+%%% @author dhanush,akhil
 %%% @copyright (C) 2022, <COMPANY>
 %%% @doc
 %%%
@@ -10,7 +10,7 @@
 -author("dhanush").
 
 %% API
--export([start/1,createActors/1,listen/1,term/1]).
+-export([start/1,createActors/1,listen/2,term/1]).
 
 createActors(_zeroes)->
   {_,_} = statistics(runtime),
@@ -34,18 +34,21 @@ createActors(_zeroes)->
   spawn(mining, main, [_zeroes,0,Pid]).
 
 
-listen(_zeroes) ->
+listen(_zeroes,_Pid) ->
   receive
     {reached_main,_String,_Hash}->
       io:fwrite("String: ~p and hash generated: ~p \n",[_String, _Hash]),
-      listen(_zeroes);
+      listen(_zeroes,_Pid);
     {ping,_Ping_ID}->
-      _Ping_ID!{nval, _zeroes},
-      listen(_zeroes)
+      _Ping_ID!{nval, _zeroes,_Pid},
+      listen(_zeroes,_Pid)
   end.
 
 start(_zeroes) ->
-  register(serverpid, spawn(server, listen, [_zeroes])).
+  {_,_} = statistics(runtime),
+  {_,_} = statistics(wall_clock),
+  _Pid = spawn(fun()->term(0) end),
+  register(serverpid, spawn(server, listen, [_zeroes,_Pid])).
 
 term(CoresDone) ->
   %Cores = erlang:system_info(logical_processors_available),
@@ -64,7 +67,7 @@ term(CoresDone) ->
     true ->
       receive
         {finished} ->
-          %io:fwrite("Core Computed! Core Count ~p~n",[CoresDone]),
+%%          io:fwrite("Core Computed! Core Count ~p~n",[CoresDone]),
           term(CoresDone+1);
         Other ->
           ok

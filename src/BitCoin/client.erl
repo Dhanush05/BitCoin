@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author dhanush
+%%% @author dhanush, akhil
 %%% @copyright (C) 2022, <COMPANY>
 %%% @doc
 %%%
@@ -10,22 +10,32 @@
 -author("dhanush").
 
 %% API
--export([mine/3,ping/1]).
+-export([mine/4,ping/1]).
 ping(Node)->
   {serverpid,Node}!{ping,self()},
   receive
-    {nval,N}->
+    {nval,N,_Pid}->
       io:format("N received"),
-      spawn(client, mine,[N,Node,0]),
-      spawn(client, mine,[N,Node,0]),
-      spawn(client, mine,[N,Node,0]),
-      spawn(client, mine,[N,Node,0]),
-      spawn(client, mine,[N,Node,0])
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid]),
+      spawn(client, mine,[N,Node,0,_Pid])
   end.
-
 %%  end.
 
-mine(N,Node,Counter) ->
+mine(N,Node,Counter,_Pid) ->
   AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
   Length = 20,
   _Gs = lists:foldl(fun(_,Acc)->
@@ -46,19 +56,11 @@ mine(N,Node,Counter) ->
         _Length ==60 ->
           io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
           {serverpid,Node}!{reached_main,_FS,_Value},
-          mine(N,Node,Counter+1);
+          mine(N,Node,Counter+1,_Pid);
         true ->
-          mine(N,Node,Counter+1)
+          mine(N,Node,Counter+1,_Pid)
       end;
     true ->
       ok
+%%      _Pid!{finished}
   end.
-%%  if
-%%    _Length ==60 ->
-%%      io:fwrite("String: ~p hash: ~p \n",[_FS,_Substring++_Hash]),
-%%      {serverpid,Node}!{reached_main,_FS,_Value},
-%%      mine(N,Node);
-%%    true ->
-%%      mine(N,Node)
-%%  end.
-%%
